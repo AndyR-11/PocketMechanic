@@ -23,6 +23,12 @@ export type Maintenance = {
   created_at: string;
 };
 
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 export async function apiRequest<T = unknown>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
@@ -39,5 +45,9 @@ export async function apiRequest<T = unknown>(endpoint: string, options: Request
   return text ? JSON.parse(text) as T : undefined as T;
 }
 
+export const todayIso = () => {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+};
 export const fmtMileage = (value: number) => `${value.toLocaleString()} mi`;
 export const fmtDate = (value: string) => new Date(`${value.slice(0, 10)}T12:00:00`).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });

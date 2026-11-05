@@ -8,8 +8,8 @@ from app.services.auth_service import (
 from app.models.user import User
 
 from app.db.database import get_db
-from app.schemas.user import UserCreate, UserResponse
-from app.services.auth_service import register_user
+from app.schemas.user import UserCreate, UserResponse, UserUpdate
+from app.services.auth_service import register_user, update_user_info
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -62,3 +62,12 @@ def logout(
 @router.get("/me", response_model=UserResponse)
 def me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.put("/me", response_model=UserResponse)
+def update_me(
+    data: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return update_user_info(db, current_user.id, data)

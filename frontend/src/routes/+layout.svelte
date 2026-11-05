@@ -2,7 +2,8 @@
   import '../app.css';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
-  import { apiRequest } from '../lib/api';
+  import { apiRequest, type User } from '../lib/api';
+  import { account } from '../lib/account.svelte';
 
   import {
     LayoutDashboard,
@@ -27,6 +28,30 @@
     page.url.pathname === '/login' ||
     page.url.pathname === '/register'
   );
+
+  let initials = $derived(
+    (account.user?.name ?? 'My Account')
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((word) => word[0].toUpperCase())
+      .join('')
+  );
+
+  $effect(() => {
+    if (isAuthPage) {
+      account.user = null;
+      return;
+    }
+
+    apiRequest<User>('/auth/me')
+      .then((user) => {
+        account.user = user;
+      })
+      .catch(() => {
+        account.user = null;
+      });
+  });
 
   let loggingOut = $state(false);
   let logoutError = $state('');
@@ -93,13 +118,17 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="sidebar-bottom">
-          <div class="avatar">PM</div>
-          <div>
-            <strong>My Account</strong>
-            <small>PocketMechanic</small>
+        <a
+          class="sidebar-bottom"
+          class:active={page.url.pathname === '/account'}
+          href="/account"
+        >
+          <div class="avatar">{initials}</div>
+          <div class="account-text">
+            <strong>{account.user?.name ?? 'My Account'}</strong>
+            <small>My Account</small>
           </div>
-        </div>
+        </a>
 
         {#if logoutError}
           <p class="logout-error" role="alert">
@@ -121,15 +150,17 @@
     <div class="main-area">
       <header class="topbar">
         <div class="breadcrumb">
-          Workspace / {navigation.find((item) =>
-            item.href === page.url.pathname
-          )?.label ?? 'Overview'}
+          Workspace / {page.url.pathname === '/account'
+            ? 'My Account'
+            : navigation.find((item) =>
+                item.href === page.url.pathname
+              )?.label ?? 'Overview'}
         </div>
 
         <div class="topbar-right">
           <span class="status-dot"></span>
           <span>System Online</span>
-          <div class="top-avatar">PM</div>
+          <a class="top-avatar" href="/account" aria-label="My Account">{initials}</a>
         </div>
       </header>
 
@@ -248,10 +279,29 @@
   }
 
   .sidebar-bottom {
-    padding: 0 9.5px 21.5px;
+    padding: 11px 9.5px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 14.5px;
+    border-radius: 12px;
+    color: white;
+    transition: background 0.2s;
+  }
+
+  .sidebar-bottom:hover,
+  .sidebar-bottom.active {
+    background: #1c2c4b;
+  }
+
+  .account-text {
+    min-width: 0;
+  }
+
+  .account-text strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .avatar,

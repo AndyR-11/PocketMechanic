@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class MaintenanceCreate(BaseModel):
@@ -30,6 +30,13 @@ class MaintenanceUpdate(BaseModel):
         decimal_places=2
     )
     notes: str | None = None
+
+    @field_validator("service_type", "service_date", "mileage", mode="before")
+    @classmethod
+    def reject_null(cls, value: object) -> object:
+        if value is None:
+            raise ValueError("Field cannot be null")
+        return value
 
 
 class MaintenanceResponse(MaintenanceCreate):

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { Wrench, Plus, Pencil, Trash2, X, ArrowRight } from '@lucide/svelte';
-  import { apiRequest, fmtDate, fmtMileage, type Vehicle, type Maintenance } from '../../lib/api';
+  import { apiRequest, todayIso, fmtDate, fmtMileage, type Vehicle, type Maintenance } from '../../lib/api';
 
   type Entry = Maintenance & { vehicle: Vehicle };
   let entries = $state<Entry[]>([]);
@@ -15,7 +15,7 @@
   let editingId = $state<number | null>(null);
   let formVehicleId = $state('');
   let serviceType = $state('');
-  let serviceDate = $state(new Date().toISOString().slice(0, 10));
+  let serviceDate = $state(todayIso());
   let mileage = $state(0);
   let cost = $state<number | undefined>(undefined);
   let notes = $state('');
@@ -39,7 +39,7 @@
   function openAdd() {
     editingId = null;
     formVehicleId = selectedVehicle !== 'all' ? selectedVehicle : String(vehicles[0]?.id ?? '');
-    serviceType = ''; serviceDate = new Date().toISOString().slice(0,10);
+    serviceType = ''; serviceDate = todayIso();
     mileage = vehicles.find(v => String(v.id) === formVehicleId)?.mileage ?? 0;
     cost = undefined; notes = ''; error = ''; showForm = true;
   }
@@ -95,7 +95,7 @@
       <form onsubmit={saveRecord}>
         <label>Vehicle<select value={formVehicleId} onchange={(e) => changeVehicle(e.currentTarget.value)} disabled={editingId !== null} required>{#each vehicles as vehicle}<option value={String(vehicle.id)}>{vehicle.year} {vehicle.make} {vehicle.model}</option>{/each}</select></label>
         <label>Service Type<input bind:value={serviceType} maxlength="100" placeholder="Oil Change" required/></label>
-        <div class="two-col"><label>Service Date<input type="date" bind:value={serviceDate} required/></label><label>Mileage<input type="number" min="0" bind:value={mileage} required/></label></div>
+        <div class="two-col"><label>Service Date<input type="date" bind:value={serviceDate} max={todayIso()} required/></label><label>Mileage<input type="number" min="0" bind:value={mileage} required/></label></div>
         <label>Cost in USD (optional)<input type="number" min="0" step="0.01" bind:value={cost} placeholder="79.99" /></label>
         <label>Notes (optional)<textarea bind:value={notes} rows="3" placeholder="Additional details..."></textarea></label>
         {#if error}<p class="alert" role="alert">{error}</p>{/if}

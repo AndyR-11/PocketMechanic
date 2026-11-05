@@ -90,7 +90,7 @@
       <div class="dialog-heading"><h2>{editingId === null ? 'Add Vehicle' : 'Edit Vehicle'}</h2><button class="icon-button" aria-label="Close" onclick={() => showForm = false}><X size={22}/></button></div>
       <form onsubmit={saveVehicle}>
         <div class="two-col"><label>Make<input bind:value={make} maxlength="100" placeholder="Toyota" required /></label><label>Model<input bind:value={model} maxlength="100" placeholder="Camry" required /></label></div>
-        <div class="two-col"><label>Year<input type="number" min="1886" max="2100" bind:value={year} required /></label><label>Mileage<input type="number" min="0" bind:value={mileage} required /></label></div>
+        <div class="two-col"><label>Year<input type="number" min="1886" max={new Date().getFullYear() + 1} bind:value={year} required /></label><label>Mileage<input type="number" min="0" bind:value={mileage} required /></label></div>
         <div class="two-col"><label>VIN (optional)<input bind:value={vin} maxlength="17" minlength="17" placeholder="17-character VIN" /></label><label>License Plate (optional)<input bind:value={licensePlate} maxlength="20" placeholder="ABC1234" /></label></div>
         {#if error}<p class="form-error">{error}</p>{/if}
         <div class="form-actions"><button type="button" class="secondary" onclick={() => showForm = false}>Cancel</button><button class="primary" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save Vehicle'}</button></div>

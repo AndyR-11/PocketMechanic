@@ -1,3 +1,5 @@
+from datetime import date
+
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -8,9 +10,21 @@ from app.services.vehicle_service import get_vehicle
 from app.models.vehicle import Vehicle
 
 
+def check_service_date(service_date: date | None) -> None:
+    # Precondition: A maintenance record describes a completed service.
+    if service_date is not None and service_date > date.today():
+        raise HTTPException(
+            status_code=422,
+            detail="Service date cannot be in the future"
+        )
+
+
 def add_maintenance(
     db: Session, user_id: int, vehicle_id: int, data: MaintenanceCreate
 ):
+    # Contract 13 (AddMaintenanceRecord)
+    check_service_date(data.service_date)
+    # Precondition: The vehicle exists and belongs to the user.
     get_vehicle(db, user_id, vehicle_id)
 
     record = MaintenanceRecord(
@@ -24,6 +38,7 @@ def add_maintenance(
 
 
 def list_maintenance(db: Session, user_id: int, vehicle_id: int):
+    # Contract 14 (ManageMaintenanceRecord)
     get_vehicle(db, user_id, vehicle_id)
 
     return db.scalars(
@@ -34,6 +49,7 @@ def list_maintenance(db: Session, user_id: int, vehicle_id: int):
 
 
 def get_maintenance(db: Session, user_id: int, record_id: int):
+    # Contracts 12 (GetMaintenanceInfo) and 14 (ManageMaintenanceRecord)
     record = db.scalar(
         select(MaintenanceRecord)
         .join(Vehicle, MaintenanceRecord.vehicle_id == Vehicle.id)
@@ -52,6 +68,8 @@ def get_maintenance(db: Session, user_id: int, record_id: int):
 def update_maintenance(
     db: Session, user_id: int, record_id: int, data: MaintenanceUpdate
 ):
+    # Contracts 11 (UpdateMaintenanceInfo) and 14 (ManageMaintenanceRecord)
+    check_service_date(data.service_date)
     record = get_maintenance(db, user_id, record_id)
 
     for field, value in data.model_dump(exclude_unset=True).items():
@@ -63,6 +81,7 @@ def update_maintenance(
 
 
 def delete_maintenance(db: Session, user_id: int, record_id: int):
+    # Contract 14 (ManageMaintenanceRecord)
     record = get_maintenance(db, user_id, record_id)
     db.delete(record)
     db.commit()

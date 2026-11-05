@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 class VehicleCreate(BaseModel):
     make: str = Field(min_length=1, max_length=100)
     model: str = Field(min_length=1, max_length=100)
-    year: int = Field(ge=1886, le=2100)
+    year: int = Field(ge=1886)
     mileage: int = Field(ge=0)
     vin: str | None = None
     license_plate: str | None = Field(default=None, max_length=20)
@@ -31,10 +31,17 @@ class VehicleCreate(BaseModel):
 class VehicleUpdate(BaseModel):
     make: str | None = Field(default=None, min_length=1, max_length=100)
     model: str | None = Field(default=None, min_length=1, max_length=100)
-    year: int | None = Field(default=None, ge=1886, le=2100)
+    year: int | None = Field(default=None, ge=1886)
     mileage: int | None = Field(default=None, ge=0)
     vin: str | None = None
     license_plate: str | None = Field(default=None, max_length=20)
+
+    @field_validator("make", "model", "year", "mileage", mode="before")
+    @classmethod
+    def reject_null(cls, value: object) -> object:
+        if value is None:
+            raise ValueError("Field cannot be null")
+        return value
 
     @field_validator("vin")
     @classmethod

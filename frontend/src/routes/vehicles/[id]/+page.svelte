@@ -3,7 +3,7 @@
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { ArrowLeft, CarFront, Wrench, Plus, Pencil, Trash2, X } from '@lucide/svelte';
-  import { apiRequest, fmtDate, fmtMileage, type Vehicle, type Maintenance } from '../../../lib/api';
+  import { apiRequest, todayIso, fmtDate, fmtMileage, type Vehicle, type Maintenance } from '../../../lib/api';
 
   let vehicle = $state<Vehicle | null>(null);
   let records = $state<Maintenance[]>([]);
@@ -13,7 +13,7 @@
   let showForm = $state(false);
   let editingId = $state<number | null>(null);
   let serviceType = $state('');
-  let serviceDate = $state(new Date().toISOString().slice(0, 10));
+  let serviceDate = $state(todayIso());
   let mileage = $state(0);
   let notes = $state('');
   let cost = $state('');
@@ -34,7 +34,7 @@
   onMount(() => { void load(); });
 
   function openAdd() {
-    editingId = null; serviceType = ''; serviceDate = new Date().toISOString().slice(0,10);
+    editingId = null; serviceType = ''; serviceDate = todayIso();
     mileage = vehicle?.mileage ?? 0; notes = ''; cost = ''; error = ''; showForm = true;
   }
   function openEdit(record: Maintenance) {
@@ -44,7 +44,7 @@
   async function saveRecord(event: SubmitEvent) {
     event.preventDefault(); saving = true; error = '';
     try {
-      const payload = { service_type: serviceType.trim(), service_date: serviceDate, mileage: Number(mileage), notes: notes.trim() || null, cost: cost.trim() === '' ? null : cost.trim() };
+      const payload = { service_type: serviceType.trim(), service_date: serviceDate, mileage: Number(mileage), notes: notes.trim() || null, cost: String(cost ?? '').trim() || null };
       await apiRequest(editingId === null ? `/vehicles/${vehicleId}/maintenance` : `/maintenance/${editingId}`, {
         method: editingId === null ? 'POST' : 'PUT', body: JSON.stringify(payload)
       });
@@ -74,7 +74,7 @@
 {#if showForm}
   <div class="overlay" role="presentation" onclick={(e) => { if (e.target === e.currentTarget) showForm = false; }}><section class="dialog" role="dialog" aria-modal="true" aria-label="Maintenance form"><div class="dialog-heading"><h2>{editingId === null ? 'Add Maintenance' : 'Edit Maintenance'}</h2><button class="icon-button" aria-label="Close" onclick={() => showForm = false}><X size={22}/></button></div><form onsubmit={saveRecord}>
     <label>Service Type<input bind:value={serviceType} maxlength="100" placeholder="Oil Change" required/></label>
-    <div class="two-col"><label>Service Date<input type="date" bind:value={serviceDate} required/></label><label>Mileage<input type="number" min="0" bind:value={mileage} required/></label></div>
+    <div class="two-col"><label>Service Date<input type="date" bind:value={serviceDate} max={todayIso()} required/></label><label>Mileage<input type="number" min="0" bind:value={mileage} required/></label></div>
     <label>Cost in USD (optional)<input type="number" min="0" step="0.01" bind:value={cost} placeholder="79.99" /></label>
     <label>Notes (optional)<textarea bind:value={notes} rows="4" placeholder="Additional details about the service..."></textarea></label>
     {#if error}<p class="alert">{error}</p>{/if}
