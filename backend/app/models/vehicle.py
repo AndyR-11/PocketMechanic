@@ -33,6 +33,14 @@ class Vehicle(Base):
         Integer, default=0, nullable=False
     )
 
+    vin: Mapped[str | None] = mapped_column(
+        String(17), nullable=True
+    )
+
+    license_plate: Mapped[str | None] = mapped_column(
+        String(20), nullable=True
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)

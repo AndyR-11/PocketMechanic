@@ -1,6 +1,7 @@
 from datetime import date, datetime, timezone
+from decimal import Decimal
 
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Date, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.database import Base
@@ -9,7 +10,9 @@ from app.db.database import Base
 class MaintenanceRecord(Base):
     __tablename__ = "maintenance_records"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True
+    )
 
     vehicle_id: Mapped[int] = mapped_column(
         Integer,
@@ -27,6 +30,10 @@ class MaintenanceRecord(Base):
 
     mileage: Mapped[int] = mapped_column(
         Integer, nullable=False
+    )
+
+    cost: Mapped[Decimal | None] = mapped_column(
+        Numeric(10, 2), nullable=True
     )
 
     notes: Mapped[str | None] = mapped_column(

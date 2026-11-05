@@ -29,6 +29,7 @@ def register_user(db: Session, user_data: UserCreate) -> User:
     hashed_password = password_hasher.hash(user_data.password)
 
     user = User(
+        name=user_data.name.strip(),
         email=user_data.email,
         password_hash=hashed_password
     )

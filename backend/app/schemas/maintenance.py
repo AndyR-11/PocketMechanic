@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -7,6 +8,12 @@ class MaintenanceCreate(BaseModel):
     service_type: str = Field(min_length=1, max_length=100)
     service_date: date
     mileage: int = Field(ge=0)
+    cost: Decimal | None = Field(
+        default=None,
+        ge=0,
+        max_digits=10,
+        decimal_places=2
+    )
     notes: str | None = None
 
 
@@ -16,6 +23,12 @@ class MaintenanceUpdate(BaseModel):
     )
     service_date: date | None = None
     mileage: int | None = Field(default=None, ge=0)
+    cost: Decimal | None = Field(
+        default=None,
+        ge=0,
+        max_digits=10,
+        decimal_places=2
+    )
     notes: str | None = None
 
 
