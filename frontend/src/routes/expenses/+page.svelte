@@ -127,7 +127,7 @@
     showForm = true;
   }
 
-  // Save a new or edited expense.
+  // Save a new or edited expense
   async function saveExpense(event: SubmitEvent) {
     event.preventDefault();
 
