@@ -17,10 +17,15 @@ from app.api.vehicles import router as vehicles_router
 from app.models.maintenance_record import MaintenanceRecord
 from app.api.maintenance import router as maintenance_router
 
+from app.models.expense import Expense
+from app.api.expenses import router as expenses_router
+
 app = FastAPI(title="PocketMechanic API")
+
 app.include_router(auth_router)
 app.include_router(vehicles_router)
 app.include_router(maintenance_router)
+app.include_router(expenses_router)
 
 Base.metadata.create_all(bind=engine)
 
