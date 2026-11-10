@@ -23,6 +23,16 @@ export type Maintenance = {
   created_at: string;
 };
 
+export type Expense = {
+  id: number;
+  vehicle_id: number;
+  amount: string | number;
+  category: string;
+  date: string;
+  notes: string | null;
+  created_at: string;
+};
+
 export type User = {
   id: number;
   name: string;
