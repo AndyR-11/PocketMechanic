@@ -20,6 +20,16 @@ class Expense(Base):
         nullable=False
     )
 
+    source_maintenance_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey(
+            "maintenance_records.id",
+            ondelete="CASCADE"
+        ),
+        unique=True,
+        nullable=True
+    )
+
     amount: Mapped[Decimal] = mapped_column(
         Numeric(10, 2), nullable=False
     )
