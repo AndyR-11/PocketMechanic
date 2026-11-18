@@ -1,0 +1,350 @@
+
+.expenses-page .heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.expenses-page .eyebrow {
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  color: #3478f6;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.expenses-page h1 {
+  font-size: 33px;
+  margin-bottom: 9px;
+}
+
+.expenses-page .heading p,
+.expenses-page .muted {
+  color: #8794a8;
+  font-size: 16px;
+}
+
+.expenses-page .primary,
+.expenses-page .secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 11px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.expenses-page .primary {
+  background: #3478f6;
+  color: white;
+}
+
+.expenses-page .primary:hover:not(:disabled) {
+  background: #2563dc;
+}
+
+.expenses-page .primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.expenses-page .secondary {
+  background: #edf1f8;
+  color: #24324a;
+}
+
+.expenses-page .summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: white;
+  border: 1px solid #e8edf5;
+  border-radius: 17px;
+  padding: 26px;
+  margin-bottom: 24px;
+}
+
+.expenses-page .summary-icon,
+.expenses-page .record-icon {
+  display: grid;
+  place-items: center;
+  background: #eaf1ff;
+  color: #3478f6;
+  flex-shrink: 0;
+}
+
+.expenses-page .summary-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+
+.expenses-page .summary span {
+  display: block;
+  color: #8794a8;
+  font-size: 15px;
+}
+
+.expenses-page .summary strong {
+  display: block;
+  font-size: 30px;
+  margin-top: 4px;
+}
+
+.expenses-page .summary small {
+  margin-left: auto;
+  color: #8794a8;
+}
+
+.expenses-page .panel {
+  background: white;
+  border: 1px solid #e8edf5;
+  border-radius: 17px;
+  padding: 28px;
+}
+
+.expenses-page .toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.expenses-page .toolbar h2 {
+  font-size: 23px;
+  margin: 0;
+}
+
+.expenses-page .toolbar label {
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.expenses-page select,
+.expenses-page input,
+.expenses-page textarea {
+  border: 1px solid #dfe5ef;
+  border-radius: 10px;
+  padding: 12px;
+  font: inherit;
+  font-size: 16px;
+  background: white;
+  color: #17233b;
+}
+
+.expenses-page .record {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 22px 0;
+  border-top: 1px solid #edf1f7;
+}
+
+.expenses-page .record-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 13px;
+}
+
+.expenses-page .record-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.expenses-page .record-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.expenses-page .record-body h3 {
+  font-size: 19px;
+  margin: 0 0 7px;
+}
+
+.expenses-page .record-body p,
+.expenses-page .record-meta span {
+  font-size: 15px;
+  color: #8794a8;
+  margin: 0;
+}
+
+.expenses-page .record-body .notes {
+  margin-top: 9px;
+  color: #475569;
+  white-space: pre-wrap;
+}
+
+.expenses-page .record-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  text-align: right;
+  font-size: 15px;
+}
+
+.expenses-page .record-meta strong {
+  font-size: 18px;
+}
+
+.expenses-page .record-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.expenses-page .icon-button {
+  border: 0;
+  background: #f2f5fa;
+  color: #59677d;
+  border-radius: 9px;
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.expenses-page .icon-button:hover {
+  background: #e3eaf5;
+}
+
+.expenses-page .icon-button.danger {
+  color: #d83e49;
+}
+
+.expenses-page .maintenance-link {
+  color: #3478f6;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.expenses-page .maintenance-link:hover {
+  text-decoration: underline;
+}
+
+.expenses-page .empty {
+  text-align: center;
+  padding: 75px 12px;
+}
+
+.expenses-page .empty h3 {
+  font-size: 22px;
+  margin: 17px 0 8px;
+}
+
+.expenses-page .empty p {
+  color: #8794a8;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.expenses-page .alert {
+  color: #b91c1c;
+  background: #fff1f2;
+  border-radius: 10px;
+  padding: 13px;
+  margin-bottom: 18px;
+}
+
+.expenses-page .overlay {
+  position: fixed;
+  inset: 0;
+  background: #101a2c99;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 30;
+}
+
+.expenses-page .dialog {
+  width: min(100%, 650px);
+  background: white;
+  border-radius: 18px;
+  padding: 32px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.expenses-page .dialog-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.expenses-page .dialog-heading h2 {
+  font-size: 25px;
+  margin: 0;
+}
+
+.expenses-page .dialog form label {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.expenses-page .dialog form input,
+.expenses-page .dialog form select,
+.expenses-page .dialog form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 9px;
+  padding: 15px;
+}
+
+.expenses-page .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.expenses-page .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 650px) {
+  .expenses-page .heading,
+  .expenses-page .toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .expenses-page .record {
+    flex-wrap: wrap;
+  }
+
+  .expenses-page .record-meta {
+    text-align: left;
+  }
+
+  .expenses-page .dialog {
+    padding: 22px;
+  }
+
+  .expenses-page .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .expenses-page .summary {
+    flex-wrap: wrap;
+  }
+}
+

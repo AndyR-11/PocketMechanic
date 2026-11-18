@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
@@ -6,13 +7,30 @@ from app.models.user import User
 from app.schemas.expense import (
     ExpenseCreate,
     ExpenseUpdate,
-    ExpenseResponse
+    ExpenseResponse,
+    ExpenseOverviewResponse
 )
 from app.services.auth_service import get_current_user
 from app.services import expense_service
 
 
 router = APIRouter(tags=["Expenses"])
+
+
+@router.get(
+    "/expenses",
+    response_model=ExpenseOverviewResponse
+)
+def read_expense_overview(
+    vehicle_id: int | None = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return expense_service.get_expense_overview(
+        db,
+        current_user.id,
+        vehicle_id
+    )
 
 
 @router.post(

@@ -31,6 +31,7 @@ export type Expense = {
   date: string;
   notes: string | null;
   created_at: string;
+  source_maintenance_id: number | null;
 };
 
 export type User = {
