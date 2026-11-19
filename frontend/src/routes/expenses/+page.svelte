@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { Wallet, Plus, Pencil, Trash2, X, Wrench } from '@lucide/svelte';
-  import { apiRequest, fmtDate, todayIso } from '../../lib/api';
+  import { apiRequest, fmtDate, todayIso, type CostSummary } from '../../lib/api';
   import './expenses.css';
 
   type ExpenseVehicle = {
@@ -56,6 +56,48 @@
 
   let requestNumber = 0;
 
+  // Cost analysis (Contract 25)
+  let summary = $state<CostSummary | null>(null);
+  let summaryError = $state('');
+
+  let largestCategory = $derived(
+    Math.max(1, ...(summary?.by_category ?? []).map(g => Number(g.total)))
+  );
+  let largestMonth = $derived(
+    Math.max(1, ...(summary?.by_month ?? []).map(g => Number(g.total)))
+  );
+
+  function monthLabel(month: string): string {
+    const [year, number] = month.split('-').map(Number);
+    return new Date(year, number - 1, 1).toLocaleDateString('en-US', {
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  async function loadSummary(currentRequest: number) {
+    try {
+      const query = selectedVehicle === 'all'
+        ? ''
+        : `?vehicle_id=${selectedVehicle}`;
+
+      const result = await apiRequest<CostSummary>(
+        `/expenses/summary${query}`
+      );
+
+      if (currentRequest !== requestNumber) return;
+
+      summary = result;
+      summaryError = '';
+    } catch (err) {
+      if (currentRequest !== requestNumber) return;
+
+      summaryError = err instanceof Error
+        ? err.message
+        : 'Could not load cost analysis';
+    }
+  }
+
   function money(value: string | number): string {
     return Number(value).toLocaleString('en-US', {
       style: 'currency',
@@ -72,9 +114,10 @@
         ? ''
         : `?vehicle_id=${selectedVehicle}`;
 
-      const result = await apiRequest<ExpenseOverview>(
-        `/expenses${query}`
-      );
+      const [result] = await Promise.all([
+        apiRequest<ExpenseOverview>(`/expenses${query}`),
+        loadSummary(currentRequest)
+      ]);
 
       if (currentRequest !== requestNumber) return;
 
@@ -240,6 +283,60 @@
       {overview.count === 1 ? 'record' : 'records'}
     </small>
   </section>
+
+  {#if summary && summary.count > 0}
+    <section class="panel analysis">
+      <div class="toolbar">
+        <h2>Cost Analysis</h2>
+        <span class="muted">
+          {selectedVehicle === 'all' ? 'All vehicles' : 'Selected vehicle'}
+        </span>
+      </div>
+      {#if summaryError}
+        <p class="alert" role="alert">{summaryError}</p>
+      {/if}
+      <div class="analysis-grid">
+        <div>
+          <h3>By Category</h3>
+          {#each summary.by_category as group (group.category)}
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>{group.category}</span>
+                <strong>{money(group.total)}</strong>
+              </div>
+              <div class="bar-track">
+                <div
+                  class="bar-fill"
+                  style:width={`${(Number(group.total) / largestCategory) * 100}%`}
+                ></div>
+              </div>
+              <small>
+                {group.count} {group.count === 1 ? 'expense' : 'expenses'}
+                · {Math.round((Number(group.total) / Number(summary.total)) * 100)}% of total
+              </small>
+            </div>
+          {/each}
+        </div>
+        <div>
+          <h3>By Month</h3>
+          {#each summary.by_month as group (group.month)}
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>{monthLabel(group.month)}</span>
+                <strong>{money(group.total)}</strong>
+              </div>
+              <div class="bar-track">
+                <div
+                  class="bar-fill month"
+                  style:width={`${(Number(group.total) / largestMonth) * 100}%`}
+                ></div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </section>
+  {/if}
 
   <section class="panel">
     <div class="toolbar">
@@ -427,6 +524,7 @@
               <input
                 type="date"
                 bind:value={expenseDate}
+                max={todayIso()}
                 required
               />
             </label>

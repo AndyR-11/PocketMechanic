@@ -88,3 +88,21 @@ class ExpenseOverviewResponse(BaseModel):
     items: list[ExpenseOverviewItem]
     total: Decimal
     count: int
+
+
+class CategoryTotal(BaseModel):
+    category: str
+    total: Decimal
+    count: int
+
+
+class MonthTotal(BaseModel):
+    month: str
+    total: Decimal
+
+
+class CostSummaryResponse(BaseModel):
+    total: Decimal
+    count: int
+    by_category: list[CategoryTotal]
+    by_month: list[MonthTotal]

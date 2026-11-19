@@ -348,3 +348,61 @@
   }
 }
 
+
+/* Cost analysis (Contract 25) */
+.expenses-page .analysis {
+  margin-bottom: 25px;
+}
+
+.expenses-page .analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.expenses-page .analysis h3 {
+  font-size: 17px;
+  margin: 0 0 14px;
+}
+
+.expenses-page .bar-row {
+  margin-bottom: 16px;
+}
+
+.expenses-page .bar-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.expenses-page .bar-track {
+  height: 10px;
+  background: #edf1f8;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.expenses-page .bar-fill {
+  height: 100%;
+  background: #3478f6;
+  border-radius: 6px;
+}
+
+.expenses-page .bar-fill.month {
+  background: #22a06b;
+}
+
+.expenses-page .bar-row small {
+  display: block;
+  color: #8794a8;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+@media (max-width: 760px) {
+  .expenses-page .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+}

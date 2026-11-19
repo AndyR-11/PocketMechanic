@@ -9,6 +9,7 @@
     LayoutDashboard,
     CarFront,
     Wrench,
+    CalendarClock,
     Wallet,
     Bell,
     LogOut
@@ -20,6 +21,7 @@
     { label: 'Dashboard', href: '/', icon: LayoutDashboard },
     { label: 'My Vehicles', href: '/vehicles', icon: CarFront },
     { label: 'Maintenance', href: '/maintenance', icon: Wrench },
+    { label: 'Schedules', href: '/schedules', icon: CalendarClock },
     { label: 'Expenses', href: '/expenses', icon: Wallet },
     { label: 'Reminders', href: '/reminders', icon: Bell }
   ];

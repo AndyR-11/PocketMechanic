@@ -1,4 +1,5 @@
 
+from datetime import date
 from decimal import Decimal
 
 from fastapi import HTTPException
@@ -11,10 +12,20 @@ from app.schemas.expense import ExpenseCreate, ExpenseUpdate
 from app.services.vehicle_service import get_vehicle
 
 
+def check_expense_date(expense_date: date | None) -> None:
+    # Contract 17: an expense cannot be dated in the future.
+    if expense_date is not None and expense_date > date.today():
+        raise HTTPException(
+            status_code=422,
+            detail="Expense date cannot be in the future"
+        )
+
+
 def add_expense(
     db: Session, user_id: int, vehicle_id: int, data: ExpenseCreate
 ):
     # Contract 17: AddExpense
+    check_expense_date(data.date)
     get_vehicle(db, user_id, vehicle_id)
 
     expense = Expense(
@@ -78,6 +89,7 @@ def update_expense(
     # Contract 15: UpdateExpenseInfo
     expense = get_expense(db, user_id, expense_id)
     check_manual_expense(expense)
+    check_expense_date(data.date)
 
     changes = data.model_dump(exclude_unset=True)
 
