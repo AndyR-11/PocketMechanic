@@ -1,12 +1,14 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { LogIn, Mail, LockKeyhole } from '@lucide/svelte';
-  import { apiRequest } from '../../lib/api';
+  import { apiRequest, type Vehicle } from '../../lib/api';
+  import MileagePrompt from '../../lib/MileagePrompt.svelte';
 
   let email = $state('');
   let password = $state('');
   let error = $state('');
   let loading = $state(false);
+  let promptVehicles = $state<Vehicle[] | null>(null);
 
   async function handleLogin(event: SubmitEvent) {
     event.preventDefault();
@@ -19,6 +21,13 @@
         body: JSON.stringify({ email, password })
       });
 
+      // Ask for updated mileage before opening the dashboard.
+      const vehicles = await apiRequest<Vehicle[]>('/vehicles').catch(() => []);
+      if (vehicles.length > 0) {
+        promptVehicles = vehicles;
+        return;
+      }
+
       await goto('/');
     } catch (err) {
       error = err instanceof Error ? err.message : 'Login failed';
@@ -27,6 +36,10 @@
     }
   }
 </script>
+
+{#if promptVehicles}
+  <MileagePrompt vehicles={promptVehicles} ondone={() => goto('/')} />
+{/if}
 
 <div class="auth-container">
   <div class="auth-card">
