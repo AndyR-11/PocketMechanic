@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.models.expense import Expense
 from app.models.vehicle import Vehicle
 from app.schemas.expense import ExpenseCreate, ExpenseUpdate
+from app.services.expense_item_factory import ExpenseItemFactory
 from app.services.vehicle_service import get_vehicle
 
 
@@ -153,31 +154,10 @@ def get_expense_overview(
         Expense.id.desc()
     )
 
-    items = []
-
-    for expense, vehicle in db.execute(query):
-        is_maintenance = (
-            expense.source_maintenance_id is not None
-        )
-
-        items.append({
-            "id": expense.id,
-            "vehicle_id": expense.vehicle_id,
-            "amount": expense.amount,
-            "category": expense.category,
-            "date": expense.date,
-            "notes": expense.notes,
-            "source": (
-                "maintenance" if is_maintenance else "manual"
-            ),
-            "maintenance_id": expense.source_maintenance_id,
-            "vehicle": {
-                "id": vehicle.id,
-                "year": vehicle.year,
-                "make": vehicle.make,
-                "model": vehicle.model
-            }
-        })
+    items = [
+        ExpenseItemFactory.create_overview_item(expense, vehicle)
+        for expense, vehicle in db.execute(query)
+    ]
 
     total = sum(
         (Decimal(str(item["amount"])) for item in items),
@@ -186,12 +166,7 @@ def get_expense_overview(
 
     return {
         "vehicles": [
-            {
-                "id": vehicle.id,
-                "year": vehicle.year,
-                "make": vehicle.make,
-                "model": vehicle.model
-            }
+            ExpenseItemFactory.create_vehicle_summary(vehicle)
             for vehicle in vehicles
         ],
         "items": items,
