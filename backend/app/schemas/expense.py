@@ -55,6 +55,54 @@ class ExpenseUpdate(BaseModel):
 class ExpenseResponse(ExpenseCreate):
     id: int
     vehicle_id: int
+    source_maintenance_id: int | None = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+from typing import Literal
+
+
+class ExpenseVehicleSummary(BaseModel):
+    id: int
+    year: int
+    make: str
+    model: str
+
+
+class ExpenseOverviewItem(BaseModel):
+    id: int
+    vehicle_id: int
+    amount: Decimal
+    category: str
+    date: Date
+    notes: str | None
+    source: Literal["manual", "maintenance"]
+    maintenance_id: int | None = None
+    vehicle: ExpenseVehicleSummary
+
+
+class ExpenseOverviewResponse(BaseModel):
+    vehicles: list[ExpenseVehicleSummary]
+    items: list[ExpenseOverviewItem]
+    total: Decimal
+    count: int
+
+
+class CategoryTotal(BaseModel):
+    category: str
+    total: Decimal
+    count: int
+
+
+class MonthTotal(BaseModel):
+    month: str
+    total: Decimal
+
+
+class CostSummaryResponse(BaseModel):
+    total: Decimal
+    count: int
+    by_category: list[CategoryTotal]
+    by_month: list[MonthTotal]
