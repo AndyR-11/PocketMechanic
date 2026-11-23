@@ -21,6 +21,9 @@
         body: JSON.stringify({ email, password })
       });
 
+      // New login, so let the reminder popup open again.
+      try { sessionStorage.removeItem('pm-reminders-popup-dismissed'); } catch {}
+
       // Ask for updated mileage before opening the dashboard.
       const vehicles = await apiRequest<Vehicle[]>('/vehicles').catch(() => []);
       if (vehicles.length > 0) {
