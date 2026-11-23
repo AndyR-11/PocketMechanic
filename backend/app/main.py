@@ -23,6 +23,8 @@ from app.api.expenses import router as expenses_router
 from app.models.maintenance_schedule import MaintenanceSchedule
 from app.api.schedules import router as schedules_router
 from app.api.dashboard import router as dashboard_router
+from app.api.dashboard import router as dashboard_router
+from app.api.reminders import router as reminders_router
 
 app = FastAPI(title="PocketMechanic API")
 
@@ -32,6 +34,7 @@ app.include_router(maintenance_router)
 app.include_router(expenses_router)
 app.include_router(schedules_router)
 app.include_router(dashboard_router)
+app.include_router(reminders_router)
 
 Base.metadata.create_all(bind=engine)
 

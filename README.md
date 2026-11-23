@@ -20,8 +20,7 @@ The project has two parts:
 - **Expenses:** record expenses for each vehicle (amount, category, date, notes) and filter them by vehicle.
 - **Dashboard:** an overview of your garage and your most recent maintenance.
 - **Data isolation:** every vehicle, maintenance and expense endpoint only returns records that belong to the logged-in user.
-
-> **Planned:** the sidebar has a **Reminders** link, but that page has not been built yet.
+- **Reminders:** services that are overdue, or due within 500 miles or 30 days. 
 
 ---
 
@@ -48,7 +47,7 @@ PocketMechanic/
 │   ├── requirements.txt
 │   ├── app/
 │   │   ├── main.py         # FastAPI app, routers, CORS, health checks
-│   │   ├── api/            # Route handlers (auth, vehicles, maintenance, expenses)
+│   │   ├── api/            # Route handlers (auth, vehicles, maintenance, expenses, schedules, reminders)
 │   │   ├── services/       # Business logic and validation rules
 │   │   ├── models/         # SQLAlchemy ORM models
 │   │   ├── schemas/        # Pydantic request/response schemas
@@ -61,7 +60,7 @@ PocketMechanic/
     └── src/
         ├── lib/api.ts      # Fetch wrapper, shared types, formatters
         └── routes/         # Pages: dashboard, login, register, account,
-                            #        vehicles, vehicles/[id], maintenance, expenses
+                            #        vehicles, vehicles/[id], maintenance, expenses, schedules, reminders
 ```
 
 ---
