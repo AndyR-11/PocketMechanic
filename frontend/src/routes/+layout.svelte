@@ -4,6 +4,7 @@
   import { goto } from '$app/navigation';
   import { apiRequest, type User } from '../lib/api';
   import { account } from '../lib/account.svelte';
+  import reminderPopup from '../lib/reminderPopup.svelte';
 
   import {
     LayoutDashboard,
@@ -160,6 +161,7 @@
         </div>
 
         <div class="topbar-right">
+          <reminderPopup />
           <span class="status-dot"></span>
           <span>System Online</span>
           <a class="top-avatar" href="/account" aria-label="My Account">{initials}</a>
