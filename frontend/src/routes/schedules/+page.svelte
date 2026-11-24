@@ -73,6 +73,7 @@
     try { await apiRequest(`/schedules/${schedule.id}`, { method: 'DELETE' }); await load(); }
     catch (err) { error = err instanceof Error ? err.message : 'Could not delete schedule'; }
   }
+  import ManualFinder from '../../lib/ManualFinder.svelte';
 </script>
 <svelte:head><title>Schedules | PocketMechanic</title></svelte:head>
 <div class="heading"><div><div class="eyebrow">MAINTENANCE PLANNING</div><h1>Schedules</h1><p>Set how often each service is due. Logging a matching service restarts its schedule.</p></div><button class="primary" onclick={openAdd} disabled={vehicles.length === 0}><Plus size={20}/> Add Schedule</button></div>
@@ -83,6 +84,7 @@
 {:else if filtered.length === 0}<div class="empty"><CalendarClock size={48} color="#3478f6"/><h3>No schedules yet</h3><p>Add a schedule to see when each service is due next.</p><button class="primary" onclick={openAdd}>Add Schedule</button></div>
 {:else}<div class="records">{#each filtered as schedule (schedule.id)}<article class="record"><div class="record-icon"><CalendarClock size={24}/></div><div class="record-body"><h3>{schedule.service_type}</h3><p>{schedule.vehicle.year} {schedule.vehicle.make} {schedule.vehicle.model} · {describeInterval(schedule)}</p><p class="baseline">{describeBaseline(schedule)}</p></div><div class="record-meta"><span>Next due</span><strong>{describeDue(schedule)}</strong><span>Now at {fmtMileage(schedule.vehicle.mileage)}</span></div><div class="record-actions"><button class="icon-button" title="Edit" aria-label="Edit schedule" onclick={() => openEdit(schedule)}><Pencil size={19}/></button><button class="icon-button danger" title="Delete" aria-label="Delete schedule" onclick={() => deleteSchedule(schedule)}><Trash2 size={19}/></button><a class="details" href={`/vehicles/${schedule.vehicle_id}`} aria-label="View vehicle details"><ArrowRight size={21}/></a></div></article>{/each}</div>{/if}
 </div>
+<ManualFinder />
 {#if showForm}
   <div class="overlay" role="presentation" onclick={(e) => { if (e.target === e.currentTarget) showForm = false; }}>
     <div class="dialog" role="dialog" aria-modal="true" aria-label="Schedule form" tabindex="-1">
